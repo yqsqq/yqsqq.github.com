@@ -6,6 +6,14 @@ comments: true
 categories: blog
 ---
 
-hello everyone,
+Hello everyone,
 
-This is my new blog, Welcom to visit!
+This is my new Github blog address, welcome to visit!
+
+For contact me, send email to qsyou@thoughtworks.com.
+
+Thanks!
+
+
+
+
