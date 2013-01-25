@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Frank's Blog]]></title>
+  <link href="http://yqsqq.github.com/atom.xml" rel="self"/>
+  <link href="http://yqsqq.github.com/"/>
+  <updated>2013-01-25T14:47:21+08:00</updated>
+  <id>http://yqsqq.github.com/</id>
+  <author>
+    <name><![CDATA[Qingsong]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[HelloWorld]]></title>
+    <link href="http://yqsqq.github.com/blog/2013/01/25/helloworld/"/>
+    <updated>2013-01-25T10:14:00+08:00</updated>
+    <id>http://yqsqq.github.com/blog/2013/01/25/helloworld</id>
+    <content type="html"><![CDATA[<p>hello everyone,</p>
+
+<p>This is my new blog, Welcom to visit!</p>
+]]></content>
+  </entry>
+  
+</feed>
