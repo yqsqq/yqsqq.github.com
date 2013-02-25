@@ -4,7 +4,7 @@
   <title><![CDATA[Frank's Blog]]></title>
   <link href="http://yqsqq.github.com/atom.xml" rel="self"/>
   <link href="http://yqsqq.github.com/"/>
-  <updated>2013-02-25T17:22:23+08:00</updated>
+  <updated>2013-02-25T17:32:53+08:00</updated>
   <id>http://yqsqq.github.com/</id>
   <author>
     <name><![CDATA[yqsqq]]></name>
@@ -24,7 +24,7 @@
 
 <p>For contact me, send email to qsyou@thoughtworks.com.</p>
 
-<p><img class="[right]" src="[source/images/2013/02/IMG_0034.jpg]" title="[300] [300]" ></p>
+<p><img class="left" src="images/2013/02/IMG_0034.jpg" width="300" height="300"></p>
 
 <p>Thanks!</p>
 ]]></content>
