@@ -12,6 +12,9 @@ This is my new Github blog address, welcome to visit!
 
 For contact me, send email to qsyou@thoughtworks.com.
 
+{% img left images/2013/02/IMG_0034.jpg 300 300 %}
+
+
 Thanks!
 
 
