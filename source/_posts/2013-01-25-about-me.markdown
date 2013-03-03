@@ -1,0 +1,22 @@
+---
+layout: post
+title: "About me"
+date: 2013-01-25 10:14
+comments: true
+categories: blog
+---
+
+Hello everyone,
+
+This is my new Github blog address, welcome to visit!
+
+For contact me, send email to qsyou@thoughtworks.com.
+
+{% img left /images/2013/02/avatar.png 300 300 %}
+
+
+Thanks!
+
+
+
+
