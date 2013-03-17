@@ -1,24 +1,97 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Frank's Blog]]></title>
-  <link href="http://yqsqq.github.com/atom.xml" rel="self"/>
-  <link href="http://yqsqq.github.com/"/>
-  <updated>2013-03-17T23:58:18+08:00</updated>
-  <id>http://yqsqq.github.com/</id>
-  <author>
-    <name><![CDATA[yqsqq]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Lambda演算-编程语言算术操作实现 - Frank's Blog</title>
+  <meta name="author" content="yqsqq">
 
   
-  <entry>
-    <title type="html"><![CDATA[Lambda演算-编程语言算术操作实现]]></title>
-    <link href="http://yqsqq.github.com/blog/2013/03/15/lambdayan-suan-bian-cheng-yu-yan-suan-zhu-cao-zuo-shi-xian/"/>
-    <updated>2013-03-15T18:54:00+08:00</updated>
-    <id>http://yqsqq.github.com/blog/2013/03/15/lambdayan-suan-bian-cheng-yu-yan-suan-zhu-cao-zuo-shi-xian</id>
-    <content type="html"><![CDATA[<h3><a target="_blank" href="http://zh.wikipedia.org/wiki/%CE%9B%E6%BC%94%E7%AE%97 ">Lambda演算</a></h3>
+  <meta name="description" content="Lambda演算 λ演算，λ演算是一套用于研究函数定义、函数应用和递归的形式系统。它由 Alonzo Church 和 Stephen Cole Kleene 在 20 世纪三十年代引入，Church 运用 lambda 演算在 1936 年给出 判定性问题 ( &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://yqsqq.github.com/blog/2013/03/15/lambdayan-suan-bian-cheng-yu-yan-suan-zhu-cao-zuo-shi-xian/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Frank's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Frank's Blog</a></h1>
+  
+    <h2>To be better.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:yqsqq.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/2013/01/25/about-me">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Lambda演算-编程语言算术操作实现</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-15T18:54:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3><a target="_blank" href="http://zh.wikipedia.org/wiki/%CE%9B%E6%BC%94%E7%AE%97 ">Lambda演算</a></h3>
 
 <p>λ演算，λ演算是一套用于研究函数定义、函数应用和递归的形式系统。它由 Alonzo Church 和 Stephen Cole Kleene 在 20 世纪三十年代引入，Church 运用 lambda 演算在 1936 年给出 判定性问题 (Entscheidungsproblem) 的一个否定的答案。这种演算可以用来清晰地定义什么是一个可计算函数。关于两个 lambda 演算表达式是否等价的命题无法通过一个通用的算法来解决，这是不可判定性能够证明的头一个问题，甚至还在停机问题之先。Lambda 演算对函数式编程有巨大的影响，特别是Lisp 语言。</p>
 
@@ -182,24 +255,142 @@ POW = λb.λe.e b<br/>
 
 
 
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <entry>
-    <title type="html"><![CDATA[About me]]></title>
-    <link href="http://yqsqq.github.com/blog/2013/01/25/about-me/"/>
-    <updated>2013-01-25T10:14:00+08:00</updated>
-    <id>http://yqsqq.github.com/blog/2013/01/25/about-me</id>
-    <content type="html"><![CDATA[<p>Hello everyone,</p>
 
-<p>This is my new Github blog address, welcome to visit!</p>
+<span class="byline author vcard">Posted by <span class="fn">yqsqq</span></span>
 
-<p>For contact me, send email to qsyou@thoughtworks.com.</p>
+      
 
-<p><img class="left" src="http://yqsqq.github.com/images/2013/02/avatar.png" width="300" height="300"></p>
 
-<p>Thanks!</p>
-]]></content>
-  </entry>
+
+
+
+
+
+
   
-</feed>
+
+
+<time datetime="2013-03-15T18:54:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/lambda/'>Lambda</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/函数式编程/'>函数式编程</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/01/25/about-me/" title="Previous Post: About me">&laquo; About me</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/15/lambdayan-suan-bian-cheng-yu-yan-suan-zhu-cao-zuo-shi-xian/">Lambda演算-编程语言算术操作实现</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/25/about-me/">About me</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/yqsqq">@yqsqq</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'yqsqq',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - yqsqq -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+</body>
+</html>

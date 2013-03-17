@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Frank Blog</title>
+  <title>Frank's Blog</title>
   <meta name="author" content="yqsqq">
 
   
-  <meta name="description" content="Hello everyone, This is my new Github blog address, welcome to visit! For contact me, send email to qsyou@thoughtworks.com. Thanks!
-">
+  <meta name="description" content="Lambda演算 λ演算，λ演算是一套用于研究函数定义、函数应用和递归的形式系统。它由 Alonzo Church 和 Stephen Cole Kleene 在 20 世纪三十年代引入，Church 运用 lambda 演算在 1936 年给出 判定性问题 ( &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -25,7 +24,7 @@
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <link href="/atom.xml" rel="alternate" title="Frank Blog" type="application/atom+xml">
+  <link href="/atom.xml" rel="alternate" title="Frank's Blog" type="application/atom+xml">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -36,7 +35,7 @@
 
 <body   >
   <header role="banner"><hgroup>
-  <h1><a href="/">Frank Blog</a></h1>
+  <h1><a href="/">Frank's Blog</a></h1>
   
     <h2>To be better.</h2>
   
@@ -66,6 +65,205 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/15/lambdayan-suan-bian-cheng-yu-yan-suan-zhu-cao-zuo-shi-xian/">Lambda演算-编程语言算术操作实现</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-15T18:54:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3><a target="_blank" href="http://zh.wikipedia.org/wiki/%CE%9B%E6%BC%94%E7%AE%97 ">Lambda演算</a></h3>
+
+<p>λ演算，λ演算是一套用于研究函数定义、函数应用和递归的形式系统。它由 Alonzo Church 和 Stephen Cole Kleene 在 20 世纪三十年代引入，Church 运用 lambda 演算在 1936 年给出 判定性问题 (Entscheidungsproblem) 的一个否定的答案。这种演算可以用来清晰地定义什么是一个可计算函数。关于两个 lambda 演算表达式是否等价的命题无法通过一个通用的算法来解决，这是不可判定性能够证明的头一个问题，甚至还在停机问题之先。Lambda 演算对函数式编程有巨大的影响，特别是Lisp 语言。</p>
+
+<h3>定义常量</h3>
+
+<p>我们这里使用ruby的lambda函数，为了编写方便，我们给lambda定义一个别名 L；同时，为了能方便地看到输出结果，我们定义了printL函数</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">alias</span> <span class="n">L</span> <span class="nb">lambda</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span>  <span class="nf">printL</span> <span class="n">n</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="n">n</span><span class="o">[</span><span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">}</span><span class="o">][</span><span class="mi">0</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们先来看 Church数的定义。<br/>
+0 ≡ λf.λx.x,<br/>
+1 ≡ λf.λx.f x<br/>
+2 ≡ λf.λx.f (f x)<br/>
+3 ≡ λf.λx.f (f (f x))<br/>
+ ..<br/>
+n ≡ λf.λx.fn x<br/>
+..<br/>
+由此可见Church整数是一个高阶函数，以单一参数函数f为参数，返回另一个单一参数的函数。
+据此，我们定义几个需要用到的整数，例如0-5：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vg">$_0</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span><span class="p">}}</span>
+</span><span class='line'><span class="vg">$_1</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">f</span><span class="o">[</span><span class="n">x</span><span class="o">]</span><span class="p">}}</span>
+</span><span class='line'><span class="vg">$_2</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">f</span><span class="o">[</span><span class="n">f</span><span class="o">[</span><span class="n">x</span><span class="o">]]</span><span class="p">}}</span>
+</span><span class='line'><span class="vg">$_3</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">f</span><span class="o">[</span><span class="n">f</span><span class="o">[</span><span class="n">f</span><span class="o">[</span><span class="n">x</span><span class="o">]]]</span><span class="p">}}</span>
+</span><span class='line'><span class="vg">$_4</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">f</span><span class="o">[</span><span class="n">f</span><span class="o">[</span><span class="n">f</span><span class="o">[</span><span class="n">f</span><span class="o">[</span><span class="n">x</span><span class="o">]]]]</span><span class="p">}}</span>
+</span><span class='line'><span class="vg">$_5</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">f</span><span class="o">[</span><span class="n">f</span><span class="o">[</span><span class="n">f</span><span class="o">[</span><span class="n">f</span><span class="o">[</span><span class="n">f</span><span class="o">[</span><span class="n">x</span><span class="o">]]]]]</span><span class="p">}}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Church布尔值:<br/>
+TRUE = λx.λy.x<br/>
+FALSE = λx.λy.y</p>
+
+<p>条件分支:<br/>
+IFTHENELSE =  λp.λa.λb. p a b</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vg">$_TRUE</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">y</span><span class="o">|</span> <span class="n">x</span><span class="p">}}</span>
+</span><span class='line'><span class="vg">$_FALSE</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">y</span><span class="o">|</span> <span class="n">y</span><span class="p">}}</span>
+</span><span class='line'><span class="vg">$_IF</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="nb">p</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">a</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">b</span><span class="o">|</span> <span class="nb">p</span><span class="o">[</span><span class="n">a</span><span class="o">][</span><span class="n">b</span><span class="o">]</span><span class="p">}}}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>有序对（2元组）数据类型可以用TRUE、FALSE来定义。<br/>
+CONS := λm.λn.λs (s m n)<br/>
+CAR := λp.p TRUE<br/>
+CDR := λp.p FALSE</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vg">$_CONS</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">n</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">s</span><span class="o">|</span> <span class="n">s</span><span class="o">[</span><span class="n">m</span><span class="o">][</span><span class="n">n</span><span class="o">]</span><span class="p">}}}</span>
+</span><span class='line'><span class="vg">$_CAR</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="nb">p</span><span class="o">|</span> <span class="nb">p</span><span class="o">[</span><span class="vg">$_TRUE</span><span class="o">]</span><span class="p">}</span>
+</span><span class='line'><span class="vg">$_CDR</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="nb">p</span><span class="o">|</span> <span class="nb">p</span><span class="o">[</span><span class="vg">$_FALSE</span><span class="o">]</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>算术运算</h3>
+
+<p>我们先来看看自增的定义：<br/>
+INC = λn.λf.λx.f(n f x)<br/>
+我们可以定义自增的函数，接收一个参数n, 返回n+1。有了自增，我们就可以实现加法了<br/>
+ADD = λn.λm.m INC n<br/>
+自增和加法的代码如下:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vg">$_INC</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">n</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">f</span><span class="o">[</span><span class="n">n</span><span class="o">[</span><span class="n">f</span><span class="o">][</span><span class="n">x</span><span class="o">]]</span><span class="p">}}}</span>
+</span><span class='line'><span class="vg">$_ADD</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">n</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="n">m</span><span class="o">[</span><span class="vg">$_INC</span><span class="o">][</span><span class="n">n</span><span class="o">]</span><span class="p">}}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#验证结果 4 + 5</span>
+</span><span class='line'><span class="n">printL</span> <span class="vg">$_ADD</span><span class="o">[</span><span class="vg">$_4</span><span class="o">][</span><span class="vg">$_5</span><span class="o">]</span>
+</span><span class='line'><span class="c1">#输出 9</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>乘法的定义：<br/>
+MULT = λm.λn.m (ADD n) 0<br/>
+乘法的代码如下:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vg">$_MULT</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">n</span><span class="o">|</span> <span class="n">m</span><span class="o">[</span><span class="vg">$_ADD</span><span class="o">[</span><span class="n">n</span><span class="o">]][</span><span class="vg">$_0</span><span class="o">]</span><span class="p">}}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#验证结果 4*5</span>
+</span><span class='line'><span class="n">printL</span> <span class="vg">$_MULT</span><span class="o">[</span><span class="vg">$_4</span><span class="o">][</span><span class="vg">$_5</span><span class="o">]</span>
+</span><span class='line'><span class="c1">#输出 20</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>阶乘的定义:<br/>
+POW = λb.λe.e b<br/>
+阶乘的代码如下:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vg">$_POW</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">b</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">e</span><span class="o">|</span> <span class="n">e</span><span class="o">[</span><span class="n">b</span><span class="o">]</span><span class="p">}}</span>
+</span><span class='line'><span class="c1"># 验证结果 3的四次幂</span>
+</span><span class='line'><span class="n">printL</span> <span class="vg">$_POW</span><span class="o">[</span><span class="vg">$_3</span><span class="o">][</span><span class="vg">$_4</span><span class="o">]</span>
+</span><span class='line'><span class="c1"># 输出 81 </span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>减法代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vg">$_WRAP</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="nb">p</span><span class="o">|</span> <span class="vg">$_CONS</span> <span class="o">[</span><span class="vg">$_FALSE</span><span class="o">]</span> <span class="o">[</span><span class="vg">$_IF</span><span class="o">[</span><span class="vg">$_CAR</span><span class="o">[</span><span class="nb">p</span><span class="o">]][</span><span class="vg">$_CDR</span><span class="o">[</span><span class="nb">p</span><span class="o">]][</span><span class="n">f</span><span class="o">[</span><span class="vg">$_SND</span><span class="o">[</span><span class="nb">p</span><span class="o">]]]]</span><span class="p">}}</span>
+</span><span class='line'><span class="vg">$_SUB1</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">n</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="vg">$_CDR</span><span class="o">[</span><span class="n">n</span><span class="o">[</span><span class="vg">$_WRAP</span><span class="o">[</span><span class="n">f</span><span class="o">]][</span><span class="vg">$_CONS</span><span class="o">[</span><span class="vg">$_TRUE</span><span class="o">][</span><span class="n">x</span><span class="o">]]]</span><span class="p">}}}</span>
+</span><span class='line'><span class="vg">$_SUB</span> <span class="o">=</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">n</span><span class="o">|</span> <span class="n">L</span><span class="p">{</span><span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="n">m</span><span class="o">[</span><span class="vg">$_SUB1</span><span class="o">][</span><span class="n">n</span><span class="o">]</span><span class="p">}}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#验证 3自减1</span>
+</span><span class='line'><span class="n">printL</span> <span class="vg">$_SUB1</span><span class="o">[</span><span class="vg">$_3</span><span class="o">]</span>
+</span><span class='line'><span class="c1">#输出 2</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#验证 5 减去 2</span>
+</span><span class='line'><span class="n">printL</span> <span class="vg">$_SUB</span><span class="o">[</span><span class="vg">$_5</span><span class="o">][</span><span class="vg">$_2</span><span class="o">]</span>
+</span><span class='line'><span class="c1">#输出 3</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -122,6 +320,10 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/15/lambdayan-suan-bian-cheng-yu-yan-suan-zhu-cao-zuo-shi-xian/">Lambda演算-编程语言算术操作实现</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/01/25/about-me/">About me</a>

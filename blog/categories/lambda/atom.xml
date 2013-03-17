@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Lambda | Frank's Blog]]></title>
+  <link href="http://yqsqq.github.com/blog/categories/lambda/atom.xml" rel="self"/>
+  <link href="http://yqsqq.github.com/"/>
+  <updated>2013-03-17T23:58:18+08:00</updated>
+  <id>http://yqsqq.github.com/</id>
+  <author>
+    <name><![CDATA[yqsqq]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Lambda演算-编程语言算术操作实现]]></title>
+    <link href="http://yqsqq.github.com/blog/2013/03/15/lambdayan-suan-bian-cheng-yu-yan-suan-zhu-cao-zuo-shi-xian/"/>
+    <updated>2013-03-15T18:54:00+08:00</updated>
+    <id>http://yqsqq.github.com/blog/2013/03/15/lambdayan-suan-bian-cheng-yu-yan-suan-zhu-cao-zuo-shi-xian</id>
+    <content type="html"><![CDATA[<h3><a target="_blank" href="http://zh.wikipedia.org/wiki/%CE%9B%E6%BC%94%E7%AE%97 ">Lambda演算</a></h3>
+
+<p>λ演算，λ演算是一套用于研究函数定义、函数应用和递归的形式系统。它由 Alonzo Church 和 Stephen Cole Kleene 在 20 世纪三十年代引入，Church 运用 lambda 演算在 1936 年给出 判定性问题 (Entscheidungsproblem) 的一个否定的答案。这种演算可以用来清晰地定义什么是一个可计算函数。关于两个 lambda 演算表达式是否等价的命题无法通过一个通用的算法来解决，这是不可判定性能够证明的头一个问题，甚至还在停机问题之先。Lambda 演算对函数式编程有巨大的影响，特别是Lisp 语言。</p>
+
+<h3>定义常量</h3>
+
+<p>我们这里使用ruby的lambda函数，为了编写方便，我们给lambda定义一个别名 L；同时，为了能方便地看到输出结果，我们定义了printL函数
+``` ruby
+alias L lambda</p>
+
+<p>def  printL n</p>
+
+<pre><code>puts n[L{|x| x + 1}][0]
+</code></pre>
+
+<p>end</p>
+
+<p>```</p>
+
+<p>我们先来看 Church数的定义。<br/>
+0 ≡ λf.λx.x,<br/>
+1 ≡ λf.λx.f x<br/>
+2 ≡ λf.λx.f (f x)<br/>
+3 ≡ λf.λx.f (f (f x))<br/>
+ ..<br/>
+n ≡ λf.λx.fn x<br/>
+..<br/>
+由此可见Church整数是一个高阶函数，以单一参数函数f为参数，返回另一个单一参数的函数。
+据此，我们定义几个需要用到的整数，例如0-5：
+``` ruby
+$<em>0 = L{|f| L{|x| x}}
+$</em>1 = L{|f| L{|x| f[x]}}
+$<em>2 = L{|f| L{|x| f[f[x]]}}
+$</em>3 = L{|f| L{|x| f[f[f[x]]]}}
+$<em>4 = L{|f| L{|x| f[f[f[f[x]]]]}}
+$</em>5 = L{|f| L{|x| f[f[f[f[f[x]]]]]}}</p>
+
+<p>```</p>
+
+<p>Church布尔值:<br/>
+TRUE = λx.λy.x<br/>
+FALSE = λx.λy.y</p>
+
+<p>条件分支:<br/>
+IFTHENELSE =  λp.λa.λb. p a b
+<code>ruby
+$_TRUE = L{|x| L{|y| x}}
+$_FALSE = L{|x| L{|y| y}}
+$_IF = L{|p| L{|a| L{|b| p[a][b]}}}
+</code></p>
+
+<p>有序对（2元组）数据类型可以用TRUE、FALSE来定义。<br/>
+CONS := λm.λn.λs (s m n)<br/>
+CAR := λp.p TRUE<br/>
+CDR := λp.p FALSE<br/>
+``` ruby</p>
+
+<p>$<em>CONS = L{|m| L{|n| L{|s| s[m][n]}}}
+$</em>CAR = L{|p| p[$<em>TRUE]}
+$</em>CDR = L{|p| p[$_FALSE]}
+```</p>
+
+<h3>算术运算</h3>
+
+<p>我们先来看看自增的定义：<br/>
+INC = λn.λf.λx.f(n f x)<br/>
+我们可以定义自增的函数，接收一个参数n, 返回n+1。有了自增，我们就可以实现加法了<br/>
+ADD = λn.λm.m INC n<br/>
+自增和加法的代码如下:
+``` ruby
+$<em>INC = L{|n| L{|f| L{|x| f[n[f][x]]}}}
+$</em>ADD = L{|n| L{|m| m[$_INC][n]}}</p>
+
+<h1>验证结果 4 + 5</h1>
+
+<p>printL $<em>ADD[$</em>4][$_5]</p>
+
+<h1>输出 9</h1>
+
+<p><code>
+乘法的定义：  
+MULT = λm.λn.m (ADD n) 0  
+乘法的代码如下:
+</code> ruby
+$<em>MULT = L{|m| L{|n| m[$</em>ADD[n]][$_0]}}</p>
+
+<h1>验证结果 4*5</h1>
+
+<p>printL $<em>MULT[$</em>4][$_5]</p>
+
+<h1>输出 20</h1>
+
+<p><code>
+阶乘的定义:  
+POW = λb.λe.e b  
+阶乘的代码如下:
+</code> ruby
+$_POW = L{|b| L{|e| e[b]}}</p>
+
+<h1>验证结果 3的四次幂</h1>
+
+<p>printL $<em>POW[$</em>3][$_4]</p>
+
+<h1>输出 81</h1>
+
+<p>```</p>
+
+<p>减法代码：<br/>
+``` ruby
+$<em>WRAP = L{|f| L{|p| $</em>CONS [$<em>FALSE] [$</em>IF[$<em>CAR[p]][$</em>CDR[p]][f[$<em>SND[p]]]]}}
+$</em>SUB1 = L{|n| L{|f| L{|x| $<em>CDR[n[$</em>WRAP[f]][$<em>CONS[$</em>TRUE][x]]]}}}
+$<em>SUB = L{|n| L{|m| m[$</em>SUB1][n]}}</p>
+
+<h1>验证 3自减1</h1>
+
+<p>printL $<em>SUB1[$</em>3]</p>
+
+<h1>输出 2</h1>
+
+<h1>验证 5 减去 2</h1>
+
+<p>printL $<em>SUB[$</em>5][$_2]</p>
+
+<h1>输出 3</h1>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+</feed>
